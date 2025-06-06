@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Teste de Aptidão para Cavaleiro</title>
+    <style>
+        /* Estilos CSS incorporados para simplificar */
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fdf8e8; /* Um tom de pergaminho claro */
+            background-image: url('https://www.transparenttextures.com/patterns/old-wall.png');
+            color: #4a2c2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 3px solid #8b4513; /* Marrom sela */
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 15px rgba(139, 69, 19, 0.5) inset;
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem 3rem;
+        }
+
+        h1 {
+            font-family: 'MedievalSharp', cursive;
+            color: #8B0000; /* Vermelho escuro */
+            text-align: center;
+            font-size: 2.8em;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 2px #ccc;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px dashed #d2b48c; /* Tan */
+        }
+
+        .question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .answers label {
+            display: block;
+            padding: 12px 15px;
+            background-color: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .answers label:hover {
+            background-color: #e9ecef;
+            border-color: #8b4513;
+        }
+
+        input[type="radio"] {
+            display: none; /* Esconde o botão de rádio padrão */
+        }
+        
+        input[type="radio"] + span {
+            margin-left: 10px;
+        }
+
+        /* Mostra um feedback visual quando a opção é selecionada */
+        input[type="radio"]:checked + span {
+            font-weight: bold;
+        }
+        
+        .answers label.selected {
+            background-color: #d2b48c;
+            border-color: #8b4513;
+            color: #fff;
+        }
+
+        #submit {
+            font-family: 'MedievalSharp', cursive;
+            background-color: #8B0000;
+            color: white;
+            border: 2px solid #5a0000;
+            padding: 15px 30px;
+            font-size: 1.8em;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 2rem;
+            transition: all 0.3s;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        #submit:hover {
+            background-color: #a52a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        #results {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .failure {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Teste de Aptidão para Cavaleiro</h1>
+        <div id="quiz"></div>
+        <button id="submit">Verificar Honra e Conhecimento</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Lógica JavaScript incorporada para simplificar
+        (function() {
+            const quizData = [
+                // As 16 perguntas que já tínhamos definido
+                {"question":"Qual destas armas não é afetada pela habilidade 'Two-Hand Quicken'?","options":["Flamberge","Claymore","Zweihander","Giant Sword"],"correct":"Flamberge"},{"question":"Qual habilidade NÃO é um requisito para 'Bowling Bash'?","options":["Provoke Nível 10","Bash","Magnum Break","Mammonite"],"correct":"Provoke Nível 10"},{"question":"Qual habilidade NÃO é um requisito para 'Brandish Spear'?","options":["Spear Boomerang lvl 3","Pierce","Spear Mastery","Riding"],"correct":"Spear Boomerang lvl 3"},{"question":"Qual arma pode atacar monstros com o atributo 'Ghost' (Fantasma)?","options":["Zephyrus","Zweihander","Katana","Sabre"],"correct":"Zephyrus"},{"question":"Qual é a velocidade de ataque após usar 'Cavalry Mastery' (Perícia em Montaria) nível 3?","options":["80%","60%","90%","100%"],"correct":"80%"},{"question":"O que fazer ao encontrar um 'Novice' (Aprendiz) a pedir ajuda?","options":["Indicar uma área de caça apropriada","Ignorar e seguir o seu caminho","Mandar o aprendiz rezar por ajuda","Sugerir um duelo PvP para o 'treinar'"],"correct":"Indicar uma área de caça apropriada"},{"question":"Como se deve agir num grupo (party)?","options":["Proteger a linha da frente e os membros mais frágeis","Ficar sempre na retaguarda para evitar dano","Caçar sozinho mesmo estando em grupo","Correr para matar os 'Bosses' sem esperar pelos outros"],"correct":"Proteger a linha da frente e os membros mais frágeis"},{"question":"Qual é o valor mais importante para um cavaleiro?","options":["Honra","Força bruta","Ganância","Inteligência"],"correct":"Honra"},{"question":"Na Pirâmide, o seu grupo encontra vários monstros perigosos. O que faz?","options":["Lidero o grupo cuidadosamente, planeando cada passo","Avanço rapidamente para despachar os inimigos","Ignoro qualquer estratégia e ataco o que vejo","Uso um ataque em área sem pensar nas consequências"],"correct":"Lidero o grupo cuidadosamente, planeando cada passo"},{"question":"Alguém do seu grupo atrai mais monstros do que consegue aguentar. Como reage?","options":["Protejo o grupo e ajudo a controlar a situação","Continuo a atacar o meu alvo, pois o erro não foi meu","Atrapalho-o para que aprenda a lição","Culpabilizo-o em voz alta pelo erro"],"correct":"Protejo o grupo e ajudo a controlar a situação"},{"question":"Um membro do grupo pede cura, mas não há um Sacerdote por perto.","options":["Sugiro que use uma poção e mantenho a formação","Ignoro o pedido, pois não posso curar","Digo ao Mago do grupo para o curar","Gasto as minhas próprias poções para o ajudar"],"correct":"Sugiro que use uma poção e mantenho a formação"},{"question":"Um item raro calha a outro jogador à sua frente. O que faz?","options":["Dou-lhe os parabéns e continuo a caçada","Tento apanhar o item antes dele","Ofereço um valor baixo para o comprar de imediato","Começo a discutir, dizendo que o item era meu por direito"],"correct":"Dou-lhe os parabéns e continuo a caçada"},{"question":"Vê um jogador novato a vender um item raro por um preço muito baixo.","options":["Aviso-o de que o item vale muito mais e dou-lhe dicas","Zombo dele pela sua ignorância","Compro o item rapidamente antes que alguém o avise","Convenço-o a vender por um preço ainda mais baixo"],"correct":"Aviso-o de que o item vale muito mais e dou-lhe dicas"},{"question":"Encontra outro aventureiro perdido numa masmorra.","options":["Explico-lhe o caminho para a saída mais próxima","Ignoro a pessoa para não perder tempo","Fico irritado por ele estar no meu caminho","Exijo pagamento em troca da minha ajuda"],"correct":"Explico-lhe o caminho para a saída mais próxima"},{"question":"Está com pouca vida (HP) e vê um Sacerdote ocupado. Como pede ajuda?","options":["Espero por uma oportunidade e peço cura educadamente","Grito 'CURA AQUI!' repetidamente","Fico à frente dele para o atrapalhar até que me note","Ameaço-o para que me dê as suas poções"],"correct":"Espero por uma oportunidade e peço cura educadamente"},{"question":"Está exausto após uma batalha e encontra um item valioso sem dono aparente.","options":["Procuro pelo dono ou pergunto no chat geral se alguém perdeu algo","Guardo o item para mim, pois 'achado não é roubado'","Vendo-o rapidamente ao primeiro comprador","Jogo o item fora para não ter problemas"],"correct":"Procuro pelo dono ou pergunto no chat geral se alguém perdeu algo"}
+            ];
+
+            const quizContainer = document.getElementById('quiz');
+            const resultsContainer = document.getElementById('results');
+            const submitButton = document.getElementById('submit');
+
+            function buildQuiz() {
+                const output = [];
+                // Baralhar as perguntas para uma nova experiência a cada vez
+                quizData.sort(() => Math.random() - 0.5);
+
+                quizData.forEach((currentQuestion, questionNumber) => {
+                    const answers = [];
+                    // Baralhar as respostas também
+                    // CORREÇÃO: Usar currentQuestion.options em vez de currentQuestion.answers
+                    const shuffledAnswers = [...currentQuestion.options].sort(() => Math.random() - 0.5);
+
+                    for (const answer of shuffledAnswers) {
+                        answers.push(
+                            `<label>
+                                <input type="radio" name="question${questionNumber}" value="${answer}">
+                                <span>${answer}</span>
+                            </label>`
+                        );
+                    }
+                    output.push(
+                        `<div class="question">
+                            <div class="question-text">${questionNumber + 1}. ${currentQuestion.question}</div>
+                            <div class="answers">${answers.join('')}</div>
+                        </div>`
+                    );
+                });
+                quizContainer.innerHTML = output.join('');
+                
+                // Adiciona funcionalidade para destacar a resposta selecionada
+                document.querySelectorAll('.answers label').forEach(label => {
+                    label.addEventListener('click', () => {
+                        // Remove a seleção de outras opções na mesma pergunta
+                        label.closest('.answers').querySelectorAll('label').forEach(l => l.classList.remove('selected'));
+                        // Adiciona a seleção à clicada
+                        label.classList.add('selected');
+                    });
+                });
+            }
+
+            function showResults() {
+                const answerContainers = quizContainer.querySelectorAll('.answers');
+                let numCorrect = 0;
+                const totalQuestions = quizData.length;
+                const requiredScore = 13; // 80% de 16 perguntas arredondado para cima
+
+                quizData.forEach((currentQuestion, questionNumber) => {
+                    const answerContainer = answerContainers[questionNumber];
+                    const selector = `input[name=question${questionNumber}]:checked`;
+                    const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+                    if (userAnswer === currentQuestion.correct) {
+                        numCorrect++;
+                    }
+                });
+
+                resultsContainer.classList.remove('success', 'failure');
+
+                if (numCorrect >= requiredScore) {
+                    resultsContainer.classList.add('success');
+                    resultsContainer.innerHTML = `🛡️ PARABÉNS! 🛡️<br>Você acertou ${numCorrect} de ${totalQuestions}.<br>Sua honra e conhecimento provam que você está apto para ser um Cavaleiro!`;
+                } else {
+                    resultsContainer.classList.add('failure');
+                    resultsContainer.innerHTML = `❌ NÃO ESTÁ APTO. ❌<br>Você acertou ${numCorrect} de ${totalQuestions}.<br>Ainda não está pronto. Estude os valores de um cavaleiro e tente novamente.`;
+                }
+                
+                // Leva o utilizador para a secção de resultados
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            buildQuiz();
+            submitButton.addEventListener('click', showResults);
+        })();
+    </script>
+</body>
+</html>
